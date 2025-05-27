@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector
+            activate="true"
+            class="com.abapblog.helpdesklink.detector.AbstractHyperlinkDetector"
+            id="com.abapblog.helpdesklink.hyperlinkDetector"
+            modifierKeys="Ctrl"
+            name="Helpdesk Links"
+            targetId="org.eclipse.ui.DefaultTextEditor">
+      </hyperlinkDetector>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            id="com.abapblog.helpdesklink.preferences.hyperlinkPatterns"
+            name="Helpdesk Hyperlink Patterns"
+            class="com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage"/>
+   </extension>
+</plugin>

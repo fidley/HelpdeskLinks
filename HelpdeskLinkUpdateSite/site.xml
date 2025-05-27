@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.abapblog.heldesklink.feature_1.0.1.202505271523.jar" id="com.abapblog.heldesklink.feature" version="1.0.1.202505271523">
+      <category name="com.abapblog.helpdesklink.category"/>
+   </feature>
+   <category-def name="com.abapblog.helpdesklink.category" label="Helpdesk Links"/>
+</site>

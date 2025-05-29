@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="com.abapblog.heldesklink.feature"
-      label="HelpdeskLinkFeature"
+      label="Helpdesk Links Feature"
       version="1.0.1.qualifier"
       provider-name="abapBlog.com">
 

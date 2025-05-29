@@ -26,11 +26,13 @@ import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 
 import com.abapblog.helpdesklink.detector.ScopeType;
+import com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage.PredefinedLink;
+import com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage.PredefinedRegex;
 
 public class PatternConfigDialog extends TitleAreaDialog {
 	private PatternConfig config;
-	private final List<String[]> predefinedRegexes;
-	private final List<String[]> predefinedLinks;
+	private final List<PredefinedRegex> predefinedRegexes;
+	private final List<PredefinedLink> predefinedLinks;
 	private PatternConfig resultConfig;
 
 	// UI fields for access in okPressed
@@ -46,18 +48,17 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		super(parent);
 		this.predefinedRegexes = null;
 		this.predefinedLinks = null;
-
 	}
 
 	/**
 	 * @wbp.parser.constructor
 	 */
-	public PatternConfigDialog(Shell parent, PatternConfig config, List<String[]> predefinedRegexes,
-			List<String[]> predefinedLinks) {
+	public PatternConfigDialog(Shell parent, PatternConfig config, List<PredefinedRegex> predefined_regexes,
+			List<PredefinedLink> predefined_links) {
 		super(parent);
 		this.config = config;
-		this.predefinedRegexes = predefinedRegexes;
-		this.predefinedLinks = predefinedLinks;
+		this.predefinedRegexes = predefined_regexes;
+		this.predefinedLinks = predefined_links;
 	}
 
 	@Override
@@ -70,6 +71,10 @@ public class PatternConfigDialog extends TitleAreaDialog {
 	@Override
 	protected Control createDialogArea(Composite parent) {
 		Composite area = (Composite) super.createDialogArea(parent);
+		GridData areaData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		areaData.heightHint = 500; // Set desired height in pixels
+		area.setLayoutData(areaData);
+
 		Composite container = new Composite(area, SWT.NONE);
 		container.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		GridLayout gl_container = new GridLayout(1, false);
@@ -232,8 +237,8 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		// Link dropdown
 		new Label(container, SWT.NONE).setText("Link Pattern:");
 		linkCombo = new Combo(container, SWT.DROP_DOWN | SWT.READ_ONLY);
-		for (String[] entry : predefinedLinks)
-			linkCombo.add(entry[0]);
+		for (PredefinedLink pl : predefinedLinks)
+			linkCombo.add(pl.name);
 		linkCombo.add("Custom");
 		linkPatternText = new Text(container, SWT.BORDER);
 		linkPatternText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -241,9 +246,9 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		linkCombo.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				for (String[] entry : predefinedLinks) {
-					if (entry[0].equals(linkCombo.getText())) {
-						linkPatternText.setText(entry[1]);
+				for (PredefinedLink pl : predefinedLinks) {
+					if (pl.name.equals(linkCombo.getText())) {
+						linkPatternText.setText(pl.url_pattern);
 						break;
 					}
 				}
@@ -264,8 +269,8 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		// Regex dropdown
 		new Label(regexContainer, SWT.NONE).setText("Pattern:");
 		regexCombo = new Combo(regexContainer, SWT.DROP_DOWN | SWT.READ_ONLY);
-		for (String[] entry : predefinedRegexes)
-			regexCombo.add(entry[0]);
+		for (PredefinedRegex pr : predefinedRegexes)
+			regexCombo.add(pr.name);
 		regexCombo.add("Custom");
 		patternText = new Text(regexContainer, SWT.BORDER);
 		patternText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -274,17 +279,22 @@ public class PatternConfigDialog extends TitleAreaDialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 
-				for (String[] entry : predefinedRegexes) {
-					if (entry[0].equals(regexCombo.getText())) {
-						patternText.setText(entry[1]);
+				for (PredefinedRegex pr : predefinedRegexes) {
+					if (pr.name.equals(regexCombo.getText())) {
+						patternText.setText(pr.pattern);
 						break;
 					}
 				}
 
 				if (regexCombo.getSelectionIndex() < predefinedRegexes.size()) {
+					// patternText.setEditable(false);
 					patternText.setEditable(false);
+					patternText.setEnabled(true);
+					patternText.setRedraw(true);
 				} else {
+					patternText.setEnabled(true);
 					patternText.setEditable(true);
+					patternText.setRedraw(true);
 				}
 				regexContainer.layout();
 			}
@@ -292,9 +302,13 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		if (config != null && config.patternName != null) {
 			regexCombo.setText(config.patternName);
 			patternText.setText(config.pattern != null ? config.pattern : "");
+			patternText.setEditable(false);
+
 		} else if (config != null) {
 			regexCombo.setText("Custom");
 			patternText.setText(config.pattern != null ? config.pattern : "");
+			patternText.setEditable(true);
+
 		}
 	}
 
@@ -304,7 +318,7 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		newConfig.label = labelText.getText();
 		if (regexCombo.getSelectionIndex() < predefinedRegexes.size()) {
 			newConfig.patternName = regexCombo.getText();
-			newConfig.pattern = predefinedRegexes.get(regexCombo.getSelectionIndex())[1];
+			newConfig.pattern = predefinedRegexes.get(regexCombo.getSelectionIndex()).pattern;
 		} else {
 			newConfig.patternName = null;
 			newConfig.pattern = patternText.getText();

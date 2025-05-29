@@ -1,22 +1,20 @@
 {
   "regexes": [
-    ["Jira Ticket", "\\b[A-Z]{2,}-\\d+\\b"],
-    ["GitHub Issue", "#(\\d+)"],
-    ["Any number", "(\\d+)"],
-    ["Email Address", "([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})"],
-    ["URL", "(https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w.-]*)"]
+    { "name": "Jira Ticket", "pattern": "\\b[A-Z]{2,}-\\d+\\b" },
+    { "name": "GitHub Issue", "pattern": "#(\\d+)" },
+    { "name": "Any number", "pattern": "\\s+(\\d+)\\s*" },
+    { "name": "Email Address", "pattern": "([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})" },
+    { "name": "URL", "pattern": "(https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w.-]*)" }
   ],
   "links": [
-  [ "Jira", "https://jira.example.com/browse/${1}"],
-			["GitHub", "https://github.com/%org/%repo/issues/${1}" ], [ "SAP Notes", "https://me.sap.com/notes/${1}" ],
-			[ "Azure DevOps", "https://dev.azure.com/%org/%project/_workitems/edit/${1}" ],
-			[ "Ivanti Service Request",
-					"https://ivanti.domain/Login.aspx?Scope=ObjectWorkspace&Role=Service%20Desk%20Analyst&CommandId=Search&ObjectType=ServiceReq%23&CommandData=ServiceReqNumber,%3D,0,${1}" ],
-			[ "Ivanti Incident",
-					"https://ivanti.domain/Login.aspx?Scope=ObjectWorkspace&Role=Service%20Desk%20Analyst&CommandId=Search&ObjectType=Incident%23&CommandData=IncidentNumber,%3D,0,${1}" ],
-			[ "Ivanti Task",
-					"https://ivanti.domain/Login.aspx?Scope=ObjectWorkspace&Role=Service%20Desk%20Analyst&CommandId=Search&ObjectType=Task%23Assignment&CommandData=AssignmentID,%3D,0,${1}" ],
-     ["Email", "mailto:${1}"],
-     ["URL", "${1}"]
+    { "name": "Jira", "url_pattern": "https://jira.example.com/browse/${match}" },
+    { "name": "GitHub", "url_pattern": "https://github.com/%org/%repo/issues/${1}" },
+    { "name": "SAP Notes", "url_pattern": "https://me.sap.com/notes/${1}" },
+    { "name": "Azure DevOps", "url_pattern": "https://dev.azure.com/%org/%project/_workitems/edit/${1}" },
+    { "name": "Ivanti Service Request", "url_pattern": "https://ivanti.example.com/Login.aspx?Scope=ObjectWorkspace&Role=ServiceDeskAnalyst&CommandId=Search&ObjectType=ServiceReq%23&CommandData=ServiceReqNumber,%3D,0,${1}" },
+    { "name": "Ivanti Incident", "url_pattern": "https://ivanti.example.com/Login.aspx?Scope=ObjectWorkspace&Role=ServiceDeskAnalyst&CommandId=Search&ObjectType=Incident%23&CommandData=IncidentNumber,%3D,0,${1}" },
+    { "name": "Ivanti Task", "url_pattern": "https://ivanti.example.com/Login.aspx?Scope=ObjectWorkspace&Role=ServiceDeskAnalyst&CommandId=Search&ObjectType=Task%23Assignment&CommandData=AssignmentID,%3D,0,${1}" },
+    { "name": "Email", "url_pattern": "mailto:${1}" },
+    { "name": "URL", "url_pattern": "${1}" }
   ]
 }

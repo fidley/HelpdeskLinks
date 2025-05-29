@@ -29,15 +29,31 @@ import org.osgi.framework.Bundle;
 
 import com.abapblog.helpdesklink.detector.ScopeType;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 public class HyperlinkPatternPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+	public HyperlinkPatternPreferencePage() {
+	}
+
 	private Table table;
 	private List<PatternConfig> patterns = new ArrayList<>();
 	public static final String PATTERNS_FILE = "hyperlinkPatterns.json";
 	public static final String PREDEFINEDS_FILE = "hyperlinkPredefineds.json";
-	private static List<String[]> PREDEFINED_REGEXES = new ArrayList<>();
-	private static List<String[]> PREDEFINED_LINKS = new ArrayList<>();
+
+	public static class PredefinedRegex {
+		public String name;
+		public String pattern;
+	}
+
+	public static class PredefinedLink {
+		public String name;
+		public String url_pattern;
+	}
+
+	private static List<PredefinedRegex> PREDEFINED_REGEXES = new ArrayList<>();
+	private static List<PredefinedLink> PREDEFINED_LINKS = new ArrayList<>();
 
 	@Override
 	public void init(IWorkbench workbench) {
@@ -59,28 +75,73 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 			col.setWidth(150);
 		}
 
-		Button addButton = new Button(container, SWT.PUSH);
-		addButton.setText("Add");
-		addButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
-		addButton.addSelectionListener(new SelectionAdapter() {
+		createButtons(container);
+
+		loadPatterns();
+		loadPredefineds();
+		refreshTable();
+		return container;
+	}
+
+	private void createButtons(Composite container) {
+		createAddButton(container);
+		createEditButton(container);
+		createCopyButton(container);
+		createRemoveButton(container);
+		createExportButton(container);
+		createImportButton(container);
+	}
+
+	private void createImportButton(Composite container) {
+		Button importButton = new Button(container, SWT.PUSH);
+		importButton.setText("Import...");
+		importButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		importButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				openEditDialog(null);
+				org.eclipse.swt.widgets.FileDialog dialog = new org.eclipse.swt.widgets.FileDialog(getShell(),
+						SWT.OPEN);
+				dialog.setText("Import Patterns");
+				String srcPath = dialog.open();
+				if (srcPath != null) {
+					try {
+						String destPath = getFilePath(PATTERNS_FILE);
+						copyFile(new File(srcPath), new File(destPath));
+						loadPatterns();
+						refreshTable();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
 			}
 		});
+	}
 
-		Button editButton = new Button(container, SWT.PUSH);
-		editButton.setText("Edit");
-		editButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
-		editButton.addSelectionListener(new SelectionAdapter() {
+	private void createExportButton(Composite container) {
+		Button exportButton = new Button(container, SWT.PUSH);
+		exportButton.setText("Export...");
+		exportButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		exportButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				int idx = table.getSelectionIndex();
-				if (idx >= 0)
-					openEditDialog(patterns.get(idx));
+				org.eclipse.swt.widgets.FileDialog dialog = new org.eclipse.swt.widgets.FileDialog(getShell(),
+						SWT.SAVE);
+				dialog.setText("Export Patterns");
+				dialog.setFileName(PATTERNS_FILE);
+				String destPath = dialog.open();
+				if (destPath != null) {
+					try {
+						String srcPath = getFilePath(PATTERNS_FILE);
+						copyFile(new File(srcPath), new File(destPath));
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				}
 			}
 		});
+	}
 
+	private void createRemoveButton(Composite container) {
 		Button removeButton = new Button(container, SWT.PUSH);
 		removeButton.setText("Remove");
 		removeButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
@@ -94,11 +155,75 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 				}
 			}
 		});
+	}
 
-		loadPatterns();
-		loadPredefineds();
-		refreshTable();
-		return container;
+	private void createCopyButton(Composite container) {
+		Button copyEntryButton = new Button(container, SWT.PUSH);
+		copyEntryButton.setText("Copy Entry");
+		copyEntryButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		copyEntryButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int idx = table.getSelectionIndex();
+				if (idx >= 0) {
+					PatternConfig source = patterns.get(idx);
+					// Create a copy of the selected entry
+					PatternConfig copy = new PatternConfig();
+					copy.label = source.label;
+					copy.pattern = source.pattern;
+					copy.patternName = source.patternName;
+					copy.linkPattern = source.linkPattern;
+					copy.linkName = source.linkName;
+					copy.scopeType = source.scopeType;
+					copy.projects = source.projects != null ? new ArrayList<>(source.projects) : null;
+					copy.workingsets = source.workingsets != null ? new ArrayList<>(source.workingsets) : null;
+					// Open edit dialog with the copy
+					PatternConfigDialog dialog = new PatternConfigDialog(getShell(), copy, PREDEFINED_REGEXES,
+							PREDEFINED_LINKS);
+					PatternConfig result = dialog.openDialog();
+					if (result != null) {
+						patterns.add(result);
+						refreshTable();
+					}
+				}
+			}
+		});
+	}
+
+	private void createEditButton(Composite container) {
+		Button editButton = new Button(container, SWT.PUSH);
+		editButton.setText("Edit");
+		editButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		editButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				int idx = table.getSelectionIndex();
+				if (idx >= 0)
+					openEditDialog(patterns.get(idx));
+			}
+		});
+	}
+
+	private void createAddButton(Composite container) {
+		Button addButton = new Button(container, SWT.PUSH);
+		addButton.setText("Add");
+		addButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
+		addButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				openEditDialog(null);
+			}
+		});
+	}
+
+	private static void copyFile(File source, File dest) throws IOException {
+		try (FileReader reader = new FileReader(source); FileWriter writer = new FileWriter(dest)) {
+			char[] buffer = new char[4096];
+			int bytesRead;
+			while ((bytesRead = reader.read(buffer)) != -1) {
+				writer.write(buffer, 0, bytesRead);
+			}
+		}
 	}
 
 	private void openEditDialog(PatternConfig config) {
@@ -220,13 +345,22 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 			String configPath = file.getAbsolutePath();
 			Gson gson = new Gson();
 			FileReader reader = new FileReader(configPath);
-			Predefineds predefineds = gson.fromJson(reader, Predefineds.class);
+			JsonObject obj = gson.fromJson(reader, JsonObject.class);
 			reader.close();
-			if (predefineds != null) {
-				PREDEFINED_REGEXES = predefineds.regexes;
-				PREDEFINED_LINKS = predefineds.links;
+			PREDEFINED_REGEXES = new ArrayList<>();
+			PREDEFINED_LINKS = new ArrayList<>();
+			if (obj.has("regexes")) {
+				for (JsonElement el : obj.getAsJsonArray("regexes")) {
+					PredefinedRegex regex = gson.fromJson(el, PredefinedRegex.class);
+					PREDEFINED_REGEXES.add(regex);
+				}
 			}
-
+			if (obj.has("links")) {
+				for (JsonElement el : obj.getAsJsonArray("links")) {
+					PredefinedLink link = gson.fromJson(el, PredefinedLink.class);
+					PREDEFINED_LINKS.add(link);
+				}
+			}
 		} catch (Exception e) {
 			PREDEFINED_REGEXES = new ArrayList<>();
 			PREDEFINED_LINKS = new ArrayList<>();
@@ -245,11 +379,5 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 		loadPredefineds();
 		refreshTable();
 		super.performDefaults();
-	}
-
-	// Helper class for JSON structure
-	private static class Predefineds {
-		List<String[]> regexes;
-		List<String[]> links;
 	}
 }

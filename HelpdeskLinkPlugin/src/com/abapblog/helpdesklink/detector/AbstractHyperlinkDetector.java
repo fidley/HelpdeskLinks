@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.core.filebuffers.FileBuffers;
+import org.eclipse.core.filebuffers.ITextFileBuffer;
+import org.eclipse.core.filebuffers.ITextFileBufferManager;
+import org.eclipse.core.filebuffers.LocationKind;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
@@ -16,10 +20,14 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkingSet;
 import org.eclipse.ui.IWorkingSetManager;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage;
 import com.google.gson.Gson;
@@ -66,8 +74,8 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 		IProject currentProject = null;
 		List<String> currentWorkingSets = new ArrayList<>();
 		try {
-			IEditorInput input = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor()
-					.getEditorInput();
+			IEditorInput input = findEditorInputForViewer(viewer);
+
 			if (input instanceof IFileEditorInput) {
 				IFile file = ((IFileEditorInput) input).getFile();
 				currentProject = file.getProject();
@@ -102,6 +110,44 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 		return false;
 	}
 
+	private IEditorInput findEditorInputForViewer(ITextViewer viewer) {
+		IDocument targetDoc = viewer.getDocument();
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		ITextFileBufferManager iTextFileBufferManager = FileBuffers.getTextFileBufferManager();
+		for (IEditorReference ref : page.getEditorReferences()) {
+			IEditorPart ed = ref.getEditor(false);
+			if (ed == null) {
+				continue;
+			}
+			IFileEditorInput input = ed.getEditorInput().getAdapter(IFileEditorInput.class);
+			if (input != null) {
+				IFile iFile = input.getFile();
+				ITextFileBuffer iTextFileBuffer = null;
+				try {
+					iTextFileBufferManager.connect(iFile.getFullPath(), LocationKind.IFILE, null);
+					iTextFileBuffer = iTextFileBufferManager.getTextFileBuffer(iFile.getFullPath(), LocationKind.IFILE);
+					IDocument editorDoc = iTextFileBuffer.getDocument();
+					iTextFileBufferManager.disconnect(iFile.getFullPath(), LocationKind.IFILE, null);
+					if (editorDoc == targetDoc) {
+						return ed.getEditorInput();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			ITextEditor editor = ref.getEditor(false) instanceof ITextEditor ? (ITextEditor) ref.getEditor(false)
+					: null;
+			if (editor != null) {
+				IDocument doc = editor.getDocumentProvider().getDocument(editor.getEditorInput());
+				if (doc == targetDoc) {
+					return editor.getEditorInput();
+				}
+			}
+		}
+		return null;
+
+	}
+
 	@Override
 	public IHyperlink[] detectHyperlinks(ITextViewer viewer, IRegion region, boolean canShowMultipleHyperlinks) {
 		List<IHyperlink> hyperlinks = new ArrayList<>();
@@ -110,7 +156,6 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 			int offset = region.getOffset();
 			IRegion lineInfo = document.getLineInformationOfOffset(offset);
 			String line = document.get(lineInfo.getOffset(), lineInfo.getLength());
-
 			List<PatternConfig> patterns = loadPatterns();
 			for (PatternConfig config : patterns) {
 				if (!isPatternApplicable(config, viewer))

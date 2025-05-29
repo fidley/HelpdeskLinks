@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup
+            class="com.abapblog.helpdesklink.releasenotes.editor.Startup">
+      </startup>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.abapblog.helpdesklink.releasenotes.editor.ReleaseNotesEditor"
+            default="false"
+            icon="media/hdl_icon16.png"
+            id="com.abapblog.helpdesklink.releasenotes.editor.ReleaseNotesEditor"
+            name="Helpdesk Links Release Notes">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            category="Helpdesk Links"
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
+         point="org.eclipse.ui.elementFactories">
+      <factory
+            class="com.abapblog.helpdesklink.releasenotes.editor.EditorInputPersistant"
+            id="com.abapblog.helpdesklink.releasenotes.editor.EditorInputPersistant">
+      </factory>
+   </extension>
+
+</plugin>

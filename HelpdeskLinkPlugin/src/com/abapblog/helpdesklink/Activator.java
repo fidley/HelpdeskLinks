@@ -24,6 +24,10 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		// Set default for browser behavior if not set
+		getPreferenceStore().setDefault(
+			com.abapblog.helpdesklink.preferences.BrowserSettingsPreferencePage.BROWSER_BEHAVIOR,
+			com.abapblog.helpdesklink.preferences.BrowserSettingsPreferencePage.DEFAULT);
 	}
 
 	@Override

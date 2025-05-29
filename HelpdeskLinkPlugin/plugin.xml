@@ -15,8 +15,13 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            id="com.abapblog.helpdesklink.preferences.hyperlinkPatterns"
-            name="Helpdesk Hyperlink Patterns"
-            class="com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage"/>
+            class="com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage"
+            id="com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage"
+            name="Helpdesk Links"/>
+      <page
+            class="com.abapblog.helpdesklink.preferences.BrowserSettingsPreferencePage"
+            id="com.abapblog.helpdesklink.preferences.BrowserSettingsPreferencePage"
+            name="Browser settings"
+            category="com.abapblog.helpdesklink.preferences.HyperlinkPatternPreferencePage"/>
    </extension>
 </plugin>

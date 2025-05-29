@@ -6,6 +6,10 @@ Update site:  https://fidley.github.io/HelpdeskLinks/
 
 [![Drag to your running Eclipse* workspace. *Requires Eclipse Marketplace Client](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/marketplace/btn-install.svg) ](https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=6854568)
 
+The Helpdesk Links plugin allows you to create hyperlinking for helpdesk-related references in your code, such as Jira tickets, GitHub issues, SAP Notes, Ivanti requests, and more. It allows you to configure custom patterns and link templates, and to choose how links are opened (external browser, internal browser, or Eclipse default).
+
+It requires a bit of regex knowledge to set up, but it is very flexible. You can use predefined patterns or create your own regex patterns to match specific references in your code.
+
 ![2025-05-29_16h35_19](https://github.com/user-attachments/assets/db168b48-0f64-4173-8f6e-69bf2680b4db)
 
 ![2025-05-29_16h37_19](https://github.com/user-attachments/assets/0b0a98e0-5782-42a3-932b-c0beda89b23c)

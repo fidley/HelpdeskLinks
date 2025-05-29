@@ -8,7 +8,7 @@
 		<buildCommand>
 			<name>org.eclipse.pde.UpdateSiteBuilder</name>
 			<arguments>
-			</arguments>
+			</arguments> 
 		</buildCommand>
 	</buildSpec>
 	<natures>

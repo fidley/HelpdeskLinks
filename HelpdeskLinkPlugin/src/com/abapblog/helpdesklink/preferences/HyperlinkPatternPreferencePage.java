@@ -12,11 +12,13 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.program.Program;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -77,10 +79,49 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 
 		createButtons(container);
 
+		createBottomButtons(container);
+
 		loadPatterns();
 		loadPredefineds();
 		refreshTable();
 		return container;
+	}
+
+	private void createBottomButtons(Composite container) {
+		Composite buttonContainer = createGHButton(container);
+
+		createBMABButton(buttonContainer);
+	}
+
+	private void createBMABButton(Composite buttonContainer) {
+		Button coffeeButton = new Button(buttonContainer, SWT.PUSH);
+		coffeeButton.setText("Buy Me a Beer");
+		coffeeButton.setImage(ImageDescriptor.createFromFile(getClass(), "/icons/beer.png").createImage());
+		coffeeButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		coffeeButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Program.launch("https://buymeacoffee.com/abapblog");
+			}
+		});
+	}
+
+	private Composite createGHButton(Composite container) {
+		Composite buttonContainer = new Composite(container, SWT.NONE);
+		buttonContainer.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 2, 1));
+		buttonContainer.setLayout(new GridLayout(2, false));
+
+		Button githubButton = new Button(buttonContainer, SWT.PUSH);
+		githubButton.setText("Create Issue or Feature Request on GitHub");
+		githubButton.setImage(ImageDescriptor.createFromFile(getClass(), "/icons/github.png").createImage());
+		githubButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false));
+		githubButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Program.launch("https://github.com/fidley/HelpdeskLinks");
+			}
+		});
+		return buttonContainer;
 	}
 
 	private void createButtons(Composite container) {
@@ -379,5 +420,6 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 		loadPredefineds();
 		refreshTable();
 		super.performDefaults();
+
 	}
 }

@@ -20,6 +20,10 @@ ul, ol {
     margin-left: 2em;
 }
 
+li {
+	word-wrap: break-word;
+
+}
 a {
     color: #1a73e8;
     text-decoration: none;

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Helpdesk Links - Regex Pattern Examples</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <img src="../media/hdlLogo.png" alt="Helpdesk Links Logo" style="display:block;margin:2em auto 2em auto;max-width:180px;">
+    <h1>Regex Pattern Examples</h1>
+    <p>The Helpdesk Links plugin supports both built-in and custom regex patterns for hyperlinking references. Below are examples and tips for using and customizing patterns and link templates.</p>
+    <h2>Included search Patterns</h2>
+    <ul>
+        <li><b>Jira:</b> <i>\b[A-Z][A-Z0-9_]+-\d+\b</i> &rarr; Matches e.g. <i>PROJ-1234</i></li>
+        <li><b>GitHub Issue:</b> <i>\b#(\d+)\b</i> &rarr; Matches e.g. <i>#42</i></li>
+        <li><b>Any lonely number</b> <i>\b(\d+)\b</i> &rarr; Matches e.g. <i>12345</i>, but not Issue12345</li>
+        <li><b>Email:</b> <i>[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}</i> &rarr; Matches e.g. <i>user@example.com</i></li>
+        <li><b>URL:</b> <i>(https?://[\w.-]+(?:\.[\w.-]+)+[/\w.-]*)</i> &rarr; Matches e.g. <i>https://example.com</i></li>
+    </ul>
+    <h2>Custom Patterns</h2>
+    <p>You can add your own regex patterns in the preferences. For example, to match a custom ticket format like <i>HD-2023-00123</i>:</p>
+    <p><i>HD-\d{4}-\d{5}</i></p>
+    <p>The best way to see if your regex works is to use online tools, like for example. <a href="https://regex101.com/" target="_blank">regex101.com</a>. You can test your regex against sample text and see the matches in real-time.</p>
+
+    <h2>Using Captured Groups in Link Templates and Labels</h2>
+    <p>Use <i>${0}</i>, <i>${1}</i>, etc. in your link template to insert captured groups from your regex. For example:</p>
+    <ul>
+        <li><b>Regex:</b> <i>JIRA-(\d+)</i></li>
+        <li><b>Link Template:</b> <i>https://jira.company.com/browse/JIRA-${1}</i></li>
+        <li><b>Result:</b> Clicking <i>JIRA-123</i> opens <i>https://jira.company.com/browse/JIRA-123</i></li>
+    </ul>
+<p>Use <i>${match}</i> in your link template to insert the entire matched string. For example:</p>
+    <ul>
+        <li><b>Regex:</b> <i>Issue-(\d+)</i></li>
+        <li><b>Label:</b> <i>Open ${match} in Service Portal</i></li>
+        <li><b>Link Template:</b> <i>https://issues.company.com/view/${match}</i></li>
+        <li><b>Result:</b> Clicking <i>Issue-456</i> shows label <i>Open Issue-456 in Service Portal</i> and opens <i>https://issues.company.com/view/Issue-456</i></li>
+        </ul>
+
+    <h2>Special Schemes</h2>
+    <p>The following link types are always opened with your system's default application (not in Eclipse browser):</p>
+    <ul>
+        <li><i>mailto:</i> (email)</li>
+        <li><i>tel:</i> (phone)</li>
+        <li><i>sms:</i> (SMS)</li>
+        <li><i>ftp:</i> (FTP)</li>
+        <li><i>file:</i> (local files)</li>
+        <li><i>news:</i> (newsreader)</li>
+        <li><i>callto:</i> (VoIP)</li>
+        <li><i>sip:</i> (VoIP)</li>
+        <li><i>skype:</i> (Skype)</li>
+    </ul>
+       <p>All other links respect your browser preference (External, Internal, Eclipse Default).</p>
+    <h2>More Examples</h2>
+    <ul>
+        <li><b>Azure DevOps Work Item:</b> <i>\b(\d+)\b</i> &rarr; Matches <i>12345</i><br>
+            <b>Link Template:</b> <i>https://dev.azure.com/yourorg/project/_workitems/edit/${1}</i>
+        </li>
+        <li><b>Custom Reference:</b> <i>REF-(\d{3,6})</i> &rarr; Matches <i>REF-123456</i><br>
+            <b>Link Template:</b> <i>https://custom.company.com/ref/${1}</i>
+        </li>
+        <li><b>Multiple Groups:</b> <i>PRJ-(\d+)-(\w+)</i> &rarr; Matches <i>PRJ-1234-ABC</i><br>
+            <b>Link Template:</b> <i>https://project.company.com/${2}/${1}</i> (results in <i>https://project.company.com/ABC/1234</i>)
+        </li>
+        <li><b>Direct Email Link:</b> <i>Contact: ([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})</i> &rarr; Matches <i>Contact: user@example.com</i><br>
+            <b>Link Template:</b> <i>mailto:${1}</i>
+        </li>
+        <li><b>SAP Transport Request:</b> <i>\b(SID)\w{1,17}\b</i> &rarr; Matches <i>SIDK904701</i><br>
+            <b>Link Template:</b> <i>adt://${1}/sap/bc/adt/transport/${match}</i>
+            </li>
+        <li><b>SAP Transport Request in SAP GUI:</b> <i>\b(SID)\w{1,17}\b</i> &rarr; Matches <i>SIDK904701</i><br>
+            <b>Link Template:</b> <i>adt://${1}/sap/bc/adt/vit/wb/object_type/%20%20%20%20rq/object_name/${match}</i>
+            </li>
+
+    </ul>
+
+<h1>Link templates</h1>
+<p>Link templates serves for faster creation of link patterns. So far I only few templates are added, but more will be added in the future.</p>
+<p>Choosing template will automatically fill the link template field with the template. You can and in fact in most cases <b>you should</b>, edit it to your needs. For example by replacing the domain, project or ogranization in the link.</p>
+<h2>Included link templates</h2>
+<ul>
+    <li><b>Jira:</b> <i>https://jira.example.com/browse/${match}</i> (replace domain)</li>
+    <li><b>GitHub: </b> <i>https://github.com/%org/%repo/issues/${1}</i> (replace <i>%org</i> and <i>%repo</i> with your organization and repository name)</li>
+    <li><b>SAP Notes:</b> <i>https://me.sap.com/notes/${1}</i></li>
+    <li><b>Azure DevOps:</b> <i>https://dev.azure.com/%org/%project/_workitems/edit/${1}</i> (replace <i>%org</i> and <i>%project</i> with your organization and project name)</li>
+    <li><b>Ivanti Service Request:</b> <i>https://ivanti.example.com/Login.aspx?Scope=ObjectWorkspace&Role=ServiceDeskAnalyst&CommandId=Search&ObjectType=ServiceReq%23&CommandData=ServiceReqNumber,%3D,0,${1}</i> (replace domain)</li>
+    <li><b>Ivanti Incident:</b> <i>https://ivanti.example.com/Login.aspx?Scope=ObjectWorkspace&Role=ServiceDeskAnalyst&CommandId=Search&ObjectType=Incident%23&CommandData=IncidentNumber,%3D,0,${1}</i> (replace domain)</li>
+    <li><b>Ivanti Task:</b> <i>https://ivanti.example.com/Login.aspx?Scope=ObjectWorkspace&Role=ServiceDeskAnalyst&CommandId=Search&ObjectType=Task%23Assignment&CommandData=AssignmentID,%3D,0,${1}</i> (replace domain)</li>
+    <li><b>Email:</b> <i>mailto:${1}</i> (opens email client)</li>
+    <li><b>URL:</b> <i>${1}</i> (generic URL, opens in browser)</li>
+    </ul>
+    <p>If you have any suggestions for new link templates, please open an issue on the <a href="https://github.com/fidley/HelpdeskLinks/issues">GitHub repository</a>.</p>
+</div>
+</body>
+</html>

@@ -8,15 +8,35 @@
 <body>
 <div class="container">
     <img src="../media/hdlLogo.png" alt="Helpdesk Links Logo" style="display:block;margin:2em auto 2em auto;max-width:180px;">
-    <h1>Latest Changes</h1>
+    <h1>Version 0.0.1 - initial version</h1>
+    <p>After installing the plugin, you can access the preferences via <b>Window &rarr; Preferences &rarr; Helpdesk Links</b>. Here you can manage your patterns and link templates.</p>
+	<figure>
+        <img src="../media/0.0.1 main preferences.png" alt="Helpdesk Links Logo" style="display:block;margin:2em auto 2em auto;max-width:800px;">
+        <figcaption>Main Preferences</figcaption>
+        </figure>
     <ul>
-        <li><b>Browser selection:</b> Added preference to choose which browser (External, Internal, Eclipse Default) is used to open helpdesk links.</li>
-        <li><b>Import/Export:</b> Added import and export buttons for hyperlink pattern configurations.</li>
-        <li><b>Pattern structure:</b> Updated JSON structure for regexes and links to use named fields.</li>
-        <li><b>UI improvements:</b> Enhanced dialogs for pattern and link selection.</li>
-        <li><b>Bug fixes and stability improvements.</b></li>
+        <li><b>Add, Edit, Remove, Copy</b> allows to manage your patterns and link templates.</li>
+        <li><b>Import/Export:</b> Import and export of hyperlink pattern configurations, so you can share it and make backups.</li>
     </ul>
-    <p>For a full list of features, see the <a href="features.html">Features</a> page.</p>
+	<figure>
+        <img src="../media/0.0.1 browser preferences.png" alt="Helpdesk Links Logo" style="display:block;margin:2em auto 2em auto;max-width:800px;">
+        <figcaption>Browser settings</figcaption>
+        </figure>
+	<p>In the <b>Browser</b> section you can choose how links are opened:</p>
+    <ul>
+        <li><b>External Browser:</b> Opens links in your system's default web browser.</li>
+        <li><b>Internal Browser:</b> Opens links in the Eclipse internal browser.</li>
+        <li><b>Eclipse Default:</b> Uses the default behavior of Eclipse for opening links.</li>
+    </ul>
+
+	<figure>
+        <img src="../media/0.0.1 new entry screen.png" alt="Helpdesk Links Logo" style="display:block;margin:2em auto 2em auto;max-width:800px;">
+        <figcaption>New Entry screen</figcaption>
+        </figure>
+     <p>To add a new pattern or link template, click the <b>Add</b> button. This opens a dialog where you can enter the regex pattern and the link template.</p>
+     <p>There are predefined search and link patterns, but you can also use totally custom ones. Please check <a href="regex-examples.html">those regex examples</a>.</p>
+     <p>You can also decide if the entry should be linked with selected projects, working sets or for all projects.</p>
+
 </div>
 </body>
 </html>

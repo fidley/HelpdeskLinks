@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<toc label="Helpdesk Links Help" topic="help/overview.html">
-    <topic label="Overview" href="help/overview.html"/>
+<toc label="abapBlog.com - Helpdesk Links" topic="help/overview.html">
+    <topic href="help/overview.html" label="Overview">
+       <topic href="help/regex-examples.html" label="Regex Examples">
+       </topic>
+    </topic>
     <topic label="Latest Changes" href="help/latest-changes.html"/>
     <topic label="Features" href="help/features.html"/>
 </toc>

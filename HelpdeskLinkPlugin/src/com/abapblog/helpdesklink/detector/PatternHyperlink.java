@@ -51,6 +51,9 @@ public class PatternHyperlink implements IHyperlink {
 				Program.launch(url);
 				return;
 			}
+			if (url.startsWith("adt:")) {
+				behavior = BrowserSettingsPreferencePage.INTERNAL; // Force internal browser for ADT links
+			}
 			URL linkUrl = new URL(url);
 			IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
 			switch (behavior) {

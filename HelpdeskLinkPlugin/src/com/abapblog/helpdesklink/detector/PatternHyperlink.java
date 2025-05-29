@@ -17,7 +17,6 @@ public class PatternHyperlink implements IHyperlink {
 	private final IRegion region;
 	private final String url;
 	private final String label;
-	// Schemes that should always be handled by Program.launch
 	private final String[] programSchemes = { "mailto:", "tel:", "sms:", "ftp:", "file:", "news:", "callto:", "sip:",
 			"skype:" };
 

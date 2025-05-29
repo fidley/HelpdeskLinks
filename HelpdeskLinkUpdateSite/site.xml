@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.abapblog.heldesklink.feature_1.0.1.202505292029.jar" id="com.abapblog.heldesklink.feature" version="1.0.1.202505292029">
-      <category name="com.abapblog.helpdesklink.category"/>
+   <feature url="features/com.abapblog.heldesklink.feature_1.0.1.202505292035.jar" id="com.abapblog.heldesklink.feature" version="1.0.1.202505292035">
+      <category name="com.abapblog.helpdesklinks.feature"/>
    </feature>
-   <category-def name="com.abapblog.helpdesklink.category" label="Helpdesk Links"/>
+   <category-def name="com.abapblog.helpdesklinks.feature" label="Helpdesk Links"/>
 </site>

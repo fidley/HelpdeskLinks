@@ -29,6 +29,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Bundle;
 
+import com.abapblog.helpdesklink.detector.AbstractHyperlinkDetector;
 import com.abapblog.helpdesklink.detector.ScopeType;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -374,6 +375,7 @@ public class HyperlinkPatternPreferencePage extends PreferencePage implements IW
 			}
 			gson.toJson(toSave, writer);
 			writer.close();
+			AbstractHyperlinkDetector.loadPatterns();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

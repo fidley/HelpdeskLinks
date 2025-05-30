@@ -1,7 +1,7 @@
 {
   "regexes": [
     { "name": "Jira Ticket", "pattern": "\\b[A-Z]{2,}-\\d+\\b" },
-    { "name": "GitHub Issue", "pattern": "\\b#(\\d+)\\b" },
+    { "name": "GitHub Issue", "pattern": "\\b*#(\\d+)\\b*" },
     { "name": "Any lonely number", "pattern": "\\b(\\d+)\\b" },
     { "name": "Email Address", "pattern": "([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,})" },
     { "name": "URL", "pattern": "(https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w.-]*)" }

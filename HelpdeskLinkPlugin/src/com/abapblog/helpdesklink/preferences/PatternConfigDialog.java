@@ -73,6 +73,7 @@ public class PatternConfigDialog extends TitleAreaDialog {
 		Composite area = (Composite) super.createDialogArea(parent);
 		GridData areaData = new GridData(SWT.FILL, SWT.FILL, true, true);
 		areaData.heightHint = 500; // Set desired height in pixels
+		areaData.widthHint = 800; // Set desired width in pixels
 		area.setLayoutData(areaData);
 
 		Composite container = new Composite(area, SWT.NONE);
@@ -159,7 +160,9 @@ public class PatternConfigDialog extends TitleAreaDialog {
 
 	private void createTreeViewer(Composite area) {
 		treeViewer = new CheckboxTreeViewer(area, SWT.BORDER);
-		treeViewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData gd = new GridData(SWT.FILL, SWT.NONE, true, true);
+		gd.heightHint = 200; // Set desired height in pixels
+		treeViewer.getTree().setLayoutData(gd);
 		treeViewer.setLabelProvider(new LabelProvider() {
 			@Override
 			public String getText(Object element) {

@@ -35,6 +35,14 @@ import com.google.gson.reflect.TypeToken;
 
 public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 
+	private static final ITextFileBufferManager iTextFileBufferManager = FileBuffers.getTextFileBufferManager();
+	private static final IWorkingSetManager wsm = PlatformUI.getWorkbench().getWorkingSetManager();
+	private static List<PatternConfig> patterns;
+
+	static {
+		loadPatterns();
+	}
+
 	private static class PatternConfig {
 		String label;
 		String pattern;
@@ -46,13 +54,13 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 		List<String> workingsets;
 	}
 
-	private static List<PatternConfig> loadPatterns() {
+	public static void loadPatterns() {
 		try {
 			String configPath = HyperlinkPatternPreferencePage
 					.getFilePath(HyperlinkPatternPreferencePage.PATTERNS_FILE);
 			Gson gson = new Gson();
 			FileReader reader = new FileReader(configPath);
-			List<PatternConfig> patterns = gson.fromJson(reader, new TypeToken<List<PatternConfig>>() {
+			patterns = gson.fromJson(reader, new TypeToken<List<PatternConfig>>() {
 			}.getType());
 			reader.close();
 			// Convert scopeType from string to enum if needed
@@ -60,10 +68,10 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 				if (config.scopeType == null)
 					config.scopeType = ScopeType.INDEPENDENT;
 			}
-			return patterns;
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new ArrayList<>();
+			patterns = new ArrayList<>();
 		}
 	}
 
@@ -75,12 +83,10 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 		List<String> currentWorkingSets = new ArrayList<>();
 		try {
 			IEditorInput input = findEditorInputForViewer(viewer);
-
 			if (input instanceof IFileEditorInput) {
 				IFile file = ((IFileEditorInput) input).getFile();
 				currentProject = file.getProject();
-				// Get working sets for the current project
-				IWorkingSetManager wsm = PlatformUI.getWorkbench().getWorkingSetManager();
+
 				for (IWorkingSet ws : wsm.getWorkingSets()) {
 					if (ws != null && ws.getElements() != null) {
 						for (Object element : ws.getElements()) {
@@ -113,7 +119,6 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 	private IEditorInput findEditorInputForViewer(ITextViewer viewer) {
 		IDocument targetDoc = viewer.getDocument();
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		ITextFileBufferManager iTextFileBufferManager = FileBuffers.getTextFileBufferManager();
 		for (IEditorReference ref : page.getEditorReferences()) {
 			IEditorPart ed = ref.getEditor(false);
 			if (ed == null) {
@@ -156,7 +161,7 @@ public class AbstractHyperlinkDetector implements IHyperlinkDetector {
 			int offset = region.getOffset();
 			IRegion lineInfo = document.getLineInformationOfOffset(offset);
 			String line = document.get(lineInfo.getOffset(), lineInfo.getLength());
-			List<PatternConfig> patterns = loadPatterns();
+
 			for (PatternConfig config : patterns) {
 				if (!isPatternApplicable(config, viewer))
 					continue;

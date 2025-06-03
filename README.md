@@ -1,6 +1,12 @@
 # HelpdeskLinks
-Eclipse Marketplace Stats: ![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/favorites/helpdesk-links)
-![Downloads](https://img.shields.io/eclipse-marketplace/dt/helpdesk-links)
+  [![Eclipse](https://img.shields.io/badge/Eclipse-FE7A16.svg?logo=Eclipse&logoColor=white)](#) [![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/favorites/helpdesk-links)](https://marketplace.eclipse.org/content/helpdesk-links)
+ [![Downloads](https://img.shields.io/eclipse-marketplace/dt/helpdesk-links)](https://marketplace.eclipse.org/content/helpdesk-links)
+
+   [![fidley - HelpdeskLinks](https://img.shields.io/static/v1?label=fidley&message=HelpdeskLinks&color=blue&logo=github)](https://github.com/fidley/HelpdeskLinks "Go to GitHub repo")
+[![stars - HelpdeskLinks](https://img.shields.io/github/stars/fidley/HelpdeskLinks?style=social)](https://github.com/fidley/HelpdeskLinks)
+[![forks - HelpdeskLinks](https://img.shields.io/github/forks/fidley/HelpdeskLinks?style=social)](https://github.com/fidley/HelpdeskLinks)
+[![License](https://img.shields.io/badge/License-MIT-blue)](#license)
+[![issues - HelpdeskLinks](https://img.shields.io/github/issues/fidley/HelpdeskLinks)](https://github.com/fidley/HelpdeskLinks/issues)
 
 Update site:  https://fidley.github.io/HelpdeskLinks/
 
